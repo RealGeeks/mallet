@@ -1,8 +1,27 @@
 'use strict';
 
 var test = require('tape');
+var mallet = require('./');
 
-test('Fake test', function (assert) {
+test('cssProps options', function (assert) {
   assert.plan(1);
-  assert.equal(1, 1);
+
+  var div = document.createElement('div');
+
+  var instance = mallet(div, {
+    cssProps: {
+      userSelect: 'text'
+    }
+  });
+
+  assert.equal(
+    div.style.userSelect ||
+    div.style.webkitUserSelect ||
+    div.style.MozUserSelect ||
+    div.style.msUserSelect,
+    'text',
+    'userSelect'
+  );
+
+  instance.destroy();
 });
