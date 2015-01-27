@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var noop = _.noop;
 var extend = _.extend;
-var merge = _.merge;
+var defaults = _.defaults;
 var toArray = _.toArray;
 
 var VENDOR_PREFIXES = ['', 'webkit', 'moz', 'MS', 'ms', 'o'];
@@ -1175,7 +1175,7 @@ function Recognizer(options) {
   this.id = _.uniqueId();
 
   this.manager = null;
-  this.options = merge(options || {}, this.defaults);
+  this.options = defaults(options || {}, this.defaults);
 
   // default is enable true
   this.options.enable = ifUndefined(this.options.enable, true);
@@ -2045,7 +2045,7 @@ var FORCED_STOP = 2;
 function Manager(element, options) {
   options = options || {};
 
-  this.options = merge(options, Mallet.defaults);
+  this.options = defaults(options, Mallet.defaults);
   this.options.inputTarget = this.options.inputTarget || element;
 
   this.handlers = {};
