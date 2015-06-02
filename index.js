@@ -6,6 +6,7 @@ var noop = require('lodash/utility/noop');
 var extend = require('lodash/object/assign');
 var defaults = require('lodash/object/defaults');
 var toArray = require('lodash/lang/toArray');
+var findIndex = require('lodash/array/findIndex');
 
 var VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
 var TEST_ELEMENT = document.createElement('div');
@@ -148,28 +149,6 @@ function splitStr(str) {
 }
 
 /**
- * find if a array contains the object using indexOf or a simple polyFill
- * @param {Array} src
- * @param {String} find
- * @param {String} [findByKey]
- * @return {Boolean|Number} false when not found, or the index
- */
-function inArray(src, find, findByKey) {
-  if (src.indexOf && !findByKey) {
-    return src.indexOf(find);
-  } else {
-    var i = 0;
-    while (i < src.length) {
-      if ((findByKey && src[i][findByKey] == find) || (!findByKey && src[i] === find)) {
-        return i;
-      }
-      i++;
-    }
-    return -1;
-  }
-}
-
-/**
  * unique array with objects based on a key (like 'id') or just by the array's value
  * @param {Array} src [{id:1},{id:2},{id:1}]
  * @param {String} [key]
@@ -183,7 +162,7 @@ function uniqueArray(src, key, sort) {
 
   while (i < src.length) {
     var val = key ? src[i][key] : src[i];
-    if (inArray(values, val) < 0) {
+    if (values.indexOf(val) < 0) {
       results.push(src[i]);
     }
     values[i] = val;
@@ -742,7 +721,7 @@ inherit(PointerEventInput, Input, {
     var isTouch = (pointerType == INPUT_TYPE_TOUCH);
 
     // get index of the event in the store
-    var storeIndex = inArray(store, ev.pointerId, 'pointerId');
+    var storeIndex = findIndex(store, 'pointerId', ev.pointerId);
 
     // start and mouse must be down
     if (eventType & INPUT_START && (ev.button === 0 || isTouch)) {
@@ -1253,7 +1232,7 @@ Recognizer.prototype = {
 
     var requireFail = this.requireFail;
     otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
-    if (inArray(requireFail, otherRecognizer) === -1) {
+    if (requireFail.indexOf(otherRecognizer) < 0) {
       requireFail.push(otherRecognizer);
       otherRecognizer.requireFailure(this);
     }
@@ -1271,7 +1250,7 @@ Recognizer.prototype = {
     }
 
     otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
-    var index = inArray(this.requireFail, otherRecognizer);
+    var index = this.requireFail.indexOf(otherRecognizer);
     if (index > -1) {
       this.requireFail.splice(index, 1);
     }
@@ -2209,7 +2188,7 @@ Manager.prototype = {
 
     var recognizers = this.recognizers;
     recognizer = this.get(recognizer);
-    recognizers.splice(inArray(recognizers, recognizer), 1);
+    recognizers.splice(recognizers.indexOf(recognizer), 1);
 
     this.touchAction.update();
     return this;
@@ -2242,7 +2221,7 @@ Manager.prototype = {
       if (!handler) {
         delete handlers[event];
       } else {
-        handlers[event].splice(inArray(handlers[event], handler), 1);
+        handlers[event].splice(handlers[event].indexOf(handler), 1);
       }
     });
     return this;
