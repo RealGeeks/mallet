@@ -1,10 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
-var noop = _.noop;
-var extend = _.extend;
-var defaults = _.defaults;
-var toArray = _.toArray;
+var each = require('lodash/collection/forEach');
+var uniqueId = require('lodash/utility/uniqueId');
+var noop = require('lodash/utility/noop');
+var extend = require('lodash/object/assign');
+var defaults = require('lodash/object/defaults');
+var toArray = require('lodash/lang/toArray');
 
 var VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
 var TEST_ELEMENT = document.createElement('div');
@@ -1172,7 +1173,7 @@ var STATE_FAILED = 32;
  * @param {Object} options
  */
 function Recognizer(options) {
-  this.id = _.uniqueId();
+  this.id = uniqueId();
 
   this.manager = null;
   this.options = defaults(options || {}, this.defaults);
@@ -2297,7 +2298,7 @@ Manager.prototype = {
  */
 function toggleCssProps(manager, add) {
   var element = manager.element;
-  _.each(manager.options.cssProps, function (value, name) {
+  each(manager.options.cssProps, function (value, name) {
     element.style[prefixed(element.style, name)] = add ? value : '';
   });
 }
