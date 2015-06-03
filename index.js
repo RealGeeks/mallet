@@ -1897,11 +1897,6 @@ function Mallet(element, options) {
 }
 
 /**
- * @const {string}
- */
-Mallet.VERSION = '2.0.4';
-
-/**
  * default settings
  * @namespace
  */
